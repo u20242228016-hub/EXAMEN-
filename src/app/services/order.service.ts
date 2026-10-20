@@ -33,7 +33,7 @@ export class OrderService {
     return {
       id: post.id,
       customerId: post.userId,
-      title: this.capitalize(post.title),
+      title: 'PRODUCTO',
       description: post.body.replace(/\n/g, ' '),
       category: this.categories[(post.userId - 1) % this.categories.length],
       price: 20000 + ((post.id * 7919) % 480) * 1000,
@@ -42,7 +42,4 @@ export class OrderService {
     };
   }
 
-  private capitalize(text: string): string {
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  }
 }
