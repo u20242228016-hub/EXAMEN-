@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Factura · Orden #{{ order.id }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>{{ order.title }}</h2>
+  <p class="description">{{ order.description }}</p>
+
+  <ion-list lines="full">
+    <ion-item>
+      <ion-label>Categoría</ion-label>
+      <ion-note slot="end">{{ order.category }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Precio unitario</ion-label>
+      <ion-note slot="end">{{ order.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Cantidad</ion-label>
+      <ion-note slot="end">{{ order.quantity }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Subtotal</ion-label>
+      <ion-note slot="end">{{ invoice.subtotal | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>IVA (19 %)</ion-label>
+      <ion-note slot="end">{{ invoice.iva | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</ion-note>
+    </ion-item>
+    <ion-item class="total">
+      <ion-label>Total</ion-label>
+      <ion-note slot="end" color="primary">{{ invoice.total | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</ion-note>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" class="confirm-btn" (click)="confirm()">
+    Confirmar facturación
+  </ion-button>
+</ion-content>

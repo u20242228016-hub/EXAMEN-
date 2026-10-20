@@ -1,0 +1,38 @@
+.metric-card {
+  margin: 0;
+  text-align: center;
+
+  ion-card-title {
+    font-size: 1.6rem;
+    color: var(--ion-color-primary);
+  }
+
+  &.critical {
+    cursor: pointer;
+
+    ion-card-title {
+      color: var(--ion-color-danger);
+    }
+  }
+}
+
+.filters-grid {
+  padding: 0;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.order-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  font-size: 0.75rem;
+  font-weight: 600;
+}

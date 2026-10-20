@@ -1,0 +1,140 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Gestión de Órdenes de Compra</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Dashboard / métricas calculadas dinámicamente -->
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="4">
+        <ion-card class="metric-card">
+          <ion-card-header>
+            <ion-card-subtitle>Órdenes mostradas</ion-card-subtitle>
+            <ion-card-title>{{ orders.length }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-card class="metric-card">
+          <ion-card-header>
+            <ion-card-subtitle>Valor total</ion-card-subtitle>
+            <ion-card-title>{{ totalValue | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+      <ion-col size="12" size-md="4">
+        <ion-card class="metric-card critical" (click)="showCriticalAlert()">
+          <ion-card-header>
+            <ion-card-subtitle>Stock crítico (&lt; {{ STOCK_CRITICO }})</ion-card-subtitle>
+            <ion-card-title>{{ criticalCount }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Filtros interactivos -->
+  <ion-card>
+    <ion-card-content>
+      <ion-searchbar
+        [(ngModel)]="searchTerm"
+        (ionInput)="applyFilters()"
+        placeholder="Buscar por título, categoría o #orden"
+        [debounce]="150"
+      ></ion-searchbar>
+
+      <ion-grid class="filters-grid">
+        <ion-row>
+          <ion-col size="6" size-md="3">
+            <ion-item>
+              <ion-input
+                label="Precio mín."
+                labelPlacement="floating"
+                type="number"
+                inputmode="numeric"
+                [(ngModel)]="minPrice"
+                (ionInput)="applyFilters()"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6" size-md="3">
+            <ion-item>
+              <ion-input
+                label="Precio máx."
+                labelPlacement="floating"
+                type="number"
+                inputmode="numeric"
+                [(ngModel)]="maxPrice"
+                (ionInput)="applyFilters()"
+              ></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6" size-md="3">
+            <ion-item>
+              <ion-select
+                label="Stock"
+                labelPlacement="floating"
+                [(ngModel)]="stockFilter"
+                (ionChange)="applyFilters()"
+              >
+                <ion-select-option value="all">Todos</ion-select-option>
+                <ion-select-option value="critical">Crítico (&lt; 5)</ion-select-option>
+                <ion-select-option value="ok">Normal</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6" size-md="3">
+            <ion-item>
+              <ion-select
+                label="Ordenar"
+                labelPlacement="floating"
+                [(ngModel)]="sortMode"
+                (ionChange)="applyFilters()"
+              >
+                <ion-select-option value="default">Por defecto</ion-select-option>
+                <ion-select-option value="price-asc">Precio ↑</ion-select-option>
+                <ion-select-option value="price-desc">Precio ↓</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-button fill="outline" size="small" (click)="clearFilters()">Limpiar filtros</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Estados -->
+  <div class="center" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+  <ion-text color="danger" *ngIf="error">
+    <p class="center">{{ error }}</p>
+  </ion-text>
+  <ion-text color="medium" *ngIf="!loading && !error && orders.length === 0">
+    <p class="center">No hay órdenes que coincidan con los filtros.</p>
+  </ion-text>
+
+  <!-- Listado -->
+  <ion-list *ngIf="!loading && orders.length > 0" lines="full">
+    <ion-item
+      *ngFor="let order of orders; trackBy: trackById"
+      button
+      detail
+      (click)="openInvoice(order)"
+    >
+      <ion-avatar slot="start" class="order-avatar">
+        <span>#{{ order.id }}</span>
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ order.title }}</h2>
+        <p>{{ order.category }} · {{ order.price | currency: 'COP' : 'symbol-narrow' : '1.0-0' }} × {{ order.quantity }}</p>
+      </ion-label>
+      <ion-badge slot="end" [color]="badgeColor(order)">
+        Stock: {{ order.stock }}
+      </ion-badge>
+    </ion-item>
+  </ion-list>
+</ion-content>
